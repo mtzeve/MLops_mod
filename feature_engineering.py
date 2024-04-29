@@ -21,7 +21,7 @@ def getNews(api_key,endpoint,ticker,from_date,to_date,num=1000):
     response = requests.get(endpoint, params=params)
     
     # Print the response from the API
-    #print(response.json())
+    print(response.json())
 
     #Return a Pandas dataframe from the response
     return pd.DataFrame(response.json())
