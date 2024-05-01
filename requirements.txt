@@ -12,3 +12,7 @@ pandas==1.5.1
 #Pillow==10.2.0
 scikit-learn==1.4.0
 seaborn==0.13.2
+python-dotenv
+requests
+alpha_vantage
+textblob
