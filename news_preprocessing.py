@@ -31,6 +31,7 @@ def process_news_articles(news_articles):
     df.drop(['published_utc'], axis=1, inplace=True)
     # set date to index
     df = df.set_index("date")
+    df.reset_index(inplace=True)
     df.index = pd.to_datetime(df.index)
 
     return df
