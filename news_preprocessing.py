@@ -35,6 +35,10 @@ def process_news_articles(news_articles):
 
     return df
 
-
+# %%
+def exponential_moving_average(df, window):
+    # Calculate EMA on the 'sentiment' column
+    df[f'exp_mean_{window}_days'] = df['sentiment'].ewm(span=window, adjust=False).mean()
+    return df
 
 
