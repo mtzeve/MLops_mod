@@ -27,7 +27,7 @@ meta_data
 
 # %%
 # Define your file path and name
-file_path = '/Users/manos/Documents/BDS/MLops_mod/TSLA_stock_price.csv'  # Customize the path and filename
+file_path = 'TSLA_stock_price.csv'  # Customize the path and filename
 
 # Save the DataFrame to CSV
 data.to_csv(file_path)
@@ -85,7 +85,7 @@ tesla_fg.insert(tsla_df, write_options={"wait_for_job" : False})
 
 # %%
 # Create feature group for historical news data
-news_df = pd.read_csv('/Users/manos/Documents/BDS/MLops_mod/news_articles.csv')
+news_df = pd.read_csv('news_articles.csv')
 
 news_sentiment_fg = fs.get_or_create_feature_group(
     name='news_sentiment',
