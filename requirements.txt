@@ -16,3 +16,4 @@ python-dotenv
 requests
 alpha_vantage
 textblob
+great_expectations==0.18.12
