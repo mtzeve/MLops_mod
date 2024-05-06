@@ -33,6 +33,7 @@ def process_news_articles(news_articles):
     df = df.set_index("date")
     df.reset_index(inplace=True)
     df.index = pd.to_datetime(df.index)
+    df = df.groupby(['date', 'ticker'])['sentiment'].mean().reset_index(name='sentiment')
 
     return df
 

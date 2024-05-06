@@ -4,7 +4,7 @@ parsedatetime==2.6
 #plotly==5.9.0
 #streamlit_folium==0.17.4
 dataframe_image==0.2.3
-hopsworks
+hopsworks==3.7.0
 hsml
 joblib
 matplotlib==3.6.3
