@@ -1,4 +1,5 @@
 # %%
+#Importing necessary libraries
 from dotenv import load_dotenv
 import os 
 from alpha_vantage.timeseries import TimeSeries
@@ -10,15 +11,14 @@ import modal
 import requests
 import pandas as pd
 import json
-#import pandas_market_calendars as mcal
+import pandas_market_calendars as mcal
 import datetime
 import numpy as np
 from datetime import datetime, timedelta
-
-
-# %%
 load_dotenv()
 
+# %%
+#Connecting to Alpha vantage using API key
 api_key = os.environ.get('stocks_api') # Replace this with your actual API key
 ts = TimeSeries(key=api_key, output_format='pandas')
 
@@ -28,12 +28,11 @@ data, meta_data = ts.get_daily(symbol='TSLA', outputsize='full')
 print(data.head())
 
 # %%
-data
-
-# %%
+#Looking at data info
 data.info()
 
 # %%
+#Looking at the meta data
 meta_data
 
 # %%
@@ -50,6 +49,7 @@ def today_is_a_business_day(today):
         return False
 
 # %%
+#Defining a function to find the next business day
 def next_business_day(today):
     
     # Real tomorrow
@@ -71,6 +71,7 @@ def next_business_day(today):
     return isBusinessDay.to_numpy()[0]
 
 # %%
+#Defining a function to extract business day
 def extract_business_day(start_date,end_date):
     """
     Given a start_date and end_date.
@@ -82,27 +83,27 @@ def extract_business_day(start_date,end_date):
         e.g is_open = [1,0,...,1] means that start_date = open, day after start_date = closed, and end_date = open
     """
     
-    # Save for later
+    # Saving for later
     end_date_save = end_date
     
-    # Get the NYSE calendar
+    # Getting the NYSE calendar
     cal = mcal.get_calendar('NYSE')
 
-    # Get the NYSE calendar's open and close times for the specified period
+    # Getting the NYSE calendar's open and close times for the specified period
     schedule = cal.schedule(start_date=start_date, end_date=end_date)
     
     # Only need a list of dates when it's open (not open and close times)
     isBusinessDay = np.array(schedule.market_open.dt.strftime('%Y-%m-%d')) 
     
-    # Go over all days: 
+    # Going over all days: 
     delta = datetime.timedelta(days=1)
     start_date = datetime.datetime.strptime(start_date,"%Y-%m-%d") #datetime.date(2015, 7, 16)
     end_date = datetime.datetime.strptime(end_date,"%Y-%m-%d") #datetime.date(2023, 1, 4)
     
-    # Extract days from the timedelta object
+    # Extracting days from the timedelta object
     num_days = (end_date - start_date).days + 1
     
-    # Create boolean array for days being open (1) and closed (0) 
+    # Creating a boolean array for days being open (1) and closed (0) 
     is_open = np.zeros(num_days)
     
     # iterate over range of dates
@@ -131,6 +132,7 @@ def extract_business_day(start_date,end_date):
     return isBusinessDay, is_open
 
 # %%
+#Defining a function to clean the column names
 def clean_column_name(name):
     # Remove all non-letter characters
     cleaned_name = re.sub(r'[^a-zA-Z]', '', name)
@@ -150,15 +152,12 @@ data.reset_index(inplace=True)
 data.head()
 
 # %%
-data
-
-# %%
-# Define the date range you're interested in
+# Define the date range we're interested in
 yesterday =datetime.now()-timedelta(days=1)
 two_years_back = yesterday - timedelta(days=684)
 
 # %%
-# Filter the DataFrame to this range
+# Filtering the DataFrame to this range
 filtered_df = data[(data['date'] >= two_years_back) & (data['date'] <= yesterday)]
 
 # %%
@@ -170,8 +169,5 @@ print(filtered_df['date'].max())
 
 # %%
 filtered_df.shape
-
-# %%
-
 
 

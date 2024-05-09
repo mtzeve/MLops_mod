@@ -19,3 +19,4 @@ textblob
 great_expectations==0.18.12
 prophet
 tensorflow
+pandas_market_calendars

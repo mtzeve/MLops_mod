@@ -1,4 +1,5 @@
 # %%
+#Importing necessary libraries
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import requests
@@ -8,6 +9,7 @@ import pandas as pd
 from textblob import TextBlob
 
 # %%
+#Defining a function to process news articles
 def process_news_articles(news_articles):
     # Convert list of dictionaries to DataFrame
     df = pd.DataFrame(news_articles)
@@ -27,19 +29,21 @@ def process_news_articles(news_articles):
     df['date'] = df['published_utc'].dt.date
     df['time'] = df['published_utc'].dt.time
 
-    # Drop unnecessary columns
+    # Dropping unnecessary columns
     df.drop(['published_utc'], axis=1, inplace=True)
     # set date to index
     df = df.set_index("date")
     df.reset_index(inplace=True)
     df.index = pd.to_datetime(df.index)
-    df = df.groupby(['date', 'ticker'])['sentiment'].mean().reset_index(name='sentiment')
+    df = df.groupby(['date', 'ticker'])['sentiment'].mean().reset_index()
 
     return df
 
 # %%
+#Defining a function for the exponential moving average
+
 def exponential_moving_average(df, window):
-    # Calculate EMA on the 'sentiment' column
+   # Calculate EMA on the 'sentiment' column
     df[f'exp_mean_{window}_days'] = df['sentiment'].ewm(span=window, adjust=False).mean()
     return df
 
