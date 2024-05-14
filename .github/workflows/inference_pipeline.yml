@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: make script executable
-        run: chmod +x ./Stocks_news_prediction/Notebooks/run_inference_pipeline.sh
+        run: chmod +x ./MLops_mod/Stocks_news_prediction/Notebooks/run_inference_pipeline.sh
           
       - name: execute python workflows from bash script
         env: 
