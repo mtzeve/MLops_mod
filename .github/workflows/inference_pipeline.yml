@@ -25,4 +25,4 @@ jobs:
       - name: execute python workflows from bash script
         env: 
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: ./MLops_mod/Stocks_news_prediction/Notebooks/run_inference_pipeline.sh
+        run: ./Users/manos/Documents/BDS/MLops_mod/Stocks_news_prediction/Notebooks/run_inference_pipeline.sh
