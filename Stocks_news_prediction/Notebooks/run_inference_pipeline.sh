@@ -2,6 +2,8 @@
 
 set -e
 
-cd /Stocks_news_prediction/Notebooks
+cd /Stocks_news_prediction/Notebooks/SML/
 
-jupyter nbconvert --to notebook --execute 8_inference_pipeline.ipynb
+python feature_pipeline.py
+
+python inference_pipeline.py
