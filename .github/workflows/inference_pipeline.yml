@@ -15,7 +15,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11'
+          python-version: '3.11.5'
           
       - name: install python packages
         run: |
@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: make script executable
-        run: chmod +x ./Stocks_news_prediction/Notebooks/run_inference_pipeline.sh
+        run: chmod +x Stocks_news_prediction/Notebooks/run_inference_pipeline.sh
           
       - name: execute python workflows from bash script
         env: 
