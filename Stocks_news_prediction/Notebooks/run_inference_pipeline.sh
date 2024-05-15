@@ -2,8 +2,8 @@
 
 set -e
 
-cd /Stocks_news_prediction/Notebooks
+cd Stocks_news_prediction/Notebooks/SML
 
-python feature_pipeline.py
+#python feature_pipeline.py
 
 python inference_pipeline.py
