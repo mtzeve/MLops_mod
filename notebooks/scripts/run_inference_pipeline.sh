@@ -2,7 +2,7 @@
 
 set -e
 
-cd Stocks_news_prediction/Notebooks/SML
+cd ./notebooks/SML
 
 #python feature_pipeline.py
 

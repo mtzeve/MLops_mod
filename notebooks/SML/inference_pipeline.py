@@ -2,7 +2,7 @@
 import pandas as pd 
 import hopsworks 
 from datetime import datetime, timedelta
-from Notebooks.Notebooks.SML.training_pipeline import model_dir
+from training_pipeline import model_dir
 import numpy as np
 
 
