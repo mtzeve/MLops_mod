@@ -29,7 +29,7 @@ print(end_date.strftime("%Y-%m-%d"))
 
 # %%
 feature_view = fs.get_feature_view('tesla_stocks_fv', 4)
-feature_view.init_batch_scoring(training_dataset_version=2)
+feature_view.init_batch_scoring(training_dataset_version=3)
 
 # %%
 print(feature_view.get_batch_query())
@@ -82,7 +82,7 @@ tesla_df_b_array = np.expand_dims(tesla_df_b_array, axis=1)
 # %%
 import joblib
 
-the_model = mr.get_model("stock_pred_model", version=7)
+the_model = mr.get_model("stock_pred_model", version=8)
 model_dir = the_model.download()
 
 model = joblib.load(model_dir + "/stock_prediction_model.pkl")
