@@ -28,8 +28,8 @@ end_date = datetime.now() - timedelta(hours=24)
 print(end_date.strftime("%Y-%m-%d"))
 
 # %%
-feature_view = fs.get_feature_view('tesla_stocks_fv', 5)
-feature_view.init_batch_scoring(training_dataset_version=1)
+feature_view = fs.get_feature_view('tesla_stocks_fv', 4)
+feature_view.init_batch_scoring(training_dataset_version=2)
 
 # %%
 print(feature_view.get_batch_query())
@@ -82,7 +82,7 @@ tesla_df_b_array = np.expand_dims(tesla_df_b_array, axis=1)
 # %%
 import joblib
 
-the_model = mr.get_model("stock_pred_model", version=28)
+the_model = mr.get_model("stock_pred_model", version=7)
 model_dir = the_model.download()
 
 model = joblib.load(model_dir + "/stock_prediction_model.pkl")
@@ -163,7 +163,7 @@ fs = project.get_feature_store()
 # %%
 results_fg = fs.get_or_create_feature_group(
     name= 'stock_prediction_results',
-    version = 4,
+    version = 1,
     description = 'Predction of TSLA open stock price',
     primary_key = ['ticker'],
     event_time = ['date'],
