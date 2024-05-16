@@ -23,9 +23,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: make script executable
-        run: chmod +x ./notebooks/run_inference_pipeline.sh
+        run: chmod +x ./notebooks/scripts/run_inference_pipeline.sh
           
       - name: execute python workflows from bash script
         env: 
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: ./notebooks/run_inference_pipeline.sh
+        run: ./notebooks/scripts/run_inference_pipeline.sh
