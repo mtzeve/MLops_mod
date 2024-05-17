@@ -1,4 +1,4 @@
-name: inference_pipeline
+name: app
 
 on:
   workflow_dispatch:
