@@ -32,7 +32,7 @@ fs = connection.get_feature_store()
 #Getting the feature view
 feature_view = fs.get_feature_view(
     name='tesla_stocks_fv',
-    version=4
+    version=5
 )
 
 # %%
@@ -56,7 +56,7 @@ feature_view.create_train_test_split(
 
 # %%
 #Collecting the split from feature view
-X_train, X_test, y_train, y_test = feature_view.get_train_test_split(3)
+X_train, X_test, y_train, y_test = feature_view.get_train_test_split(1)
 
 # %%
 #Inspecting X_train
