@@ -16,13 +16,13 @@ import folium
 from streamlit_folium import st_folium
 import json
 
-start_date = '2024-05-08'
-end_date = '2024-05-09'
+start_date = datetime.now() - timedelta(hours=48)
+end_date = datetime.now() - timedelta(hours=24)
 
 
 warnings.filterwarnings("ignore")
 
-api_key = os.environ.get('hopsworks_api')
+api_key = os.getenv('HOPSWORKS_API_KEY')
 project = hopsworks.login(api_key_value=api_key)
 fs = project.get_feature_store()
 
@@ -43,7 +43,7 @@ def get_feature_view():
 @st.cache_data()
 def get_model(_project = project):
     mr = project.get_model_registry()
-    model = mr.get_model("stock_pred_model", version = 28)
+    model = mr.get_model("stock_pred_model", version = 10)
     model_dir = model.download()
     return joblib.load(model_dir + "/stock_prediction_model.pkl")
 #
