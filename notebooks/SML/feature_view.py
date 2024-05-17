@@ -27,8 +27,8 @@ fs = project.get_feature_store()
 def create_stocks_feature_view(fs, version):
 
     # Loading in the feature groups
-    tesla_fg = fs.get_feature_group('tesla_stock', version=1)
-    news_sentiment_fg = fs.get_feature_group('news_sentiment_updated', version=1)
+    tesla_fg = fs.get_feature_group('tesla_stock', version=2)
+    news_sentiment_fg = fs.get_feature_group('news_sentiment_updated', version=2)
 
     # Defining the query
     ds_query = tesla_fg.select(['date', 'open', 'ticker'])\
@@ -46,10 +46,10 @@ def create_stocks_feature_view(fs, version):
 # %%
 #Creating the feature view
 try:
-    feature_view = fs.get_feature_view("tesla_stocks_fv", version=1)
-    tesla_fg = fs.get_feature_group('tesla_stock', version=1)
+    feature_view = fs.get_feature_view("tesla_stocks_fv", version=2)
+    tesla_fg = fs.get_feature_group('tesla_stock', version=2)
 except:
-    feature_view, tesla_fg = create_stocks_feature_view(fs, 1)
+    feature_view, tesla_fg = create_stocks_feature_view(fs, 2)
 
 # %%
 #Defining a function to get fixed data from the feature view
