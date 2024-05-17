@@ -28,4 +28,7 @@ jobs:
       - name: execute python workflows from bash script
         env: 
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+          ENDPOINTNEWSP: ${{ secrets.ENDPOINTNEWSP }}
+          STOCKS_API: ${{ secrets.STOCKS_API }}
+          NEWSP_API: ${{ secrets.NEWSP_API }}
         run: ./notebooks/scripts/run_inference_pipeline.sh
