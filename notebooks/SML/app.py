@@ -82,7 +82,7 @@ fv = get_feature_view()
 
 
 if st.button('📊 Make a prediction'):
-    batch_data = retrieve_dataset(fv, start_date, end_date)
+    batch_data = retrieve_dataset(_fv, start_date, end_date)
     st.write("✅ Retrieved!")
     #progress_bar.progress(55)
     #predictions = model.predict(batch_data)
