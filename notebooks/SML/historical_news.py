@@ -66,7 +66,7 @@ api_key = os.getenv('NEWSP_API')
 ticker = 'TSLA'
 end_date = datetime.now() - timedelta(days=1)  # Yesterday's date
 start_date = end_date - timedelta(days=365 * 2)
-news_articles = fetch_news(api_key, ticker, start_date, end_date)
+news_articles = fetch_news(ticker, start_date, end_date)
 print(f"Total articles fetched: {len(news_articles)}")
 
 
