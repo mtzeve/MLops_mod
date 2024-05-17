@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import joblib
 import pandas as pd
 import numpy as np
@@ -15,6 +15,12 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 import json
+
+import asyncio
+import nest_asyncio
+
+# Apply nest_asyncio to the current event loop
+nest_asyncio.apply(asyncio.get_event_loop())
 
 start_date = datetime.now() - timedelta(hours=48)
 end_date = datetime.now() - timedelta(hours=24)
