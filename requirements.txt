@@ -22,3 +22,5 @@ tensorflow
 pandas_market_calendars
 streamlit
 streamlit_folium
+asyncio
+nest_asyncio
