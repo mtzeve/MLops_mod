@@ -2,8 +2,8 @@ name: inference_pipeline
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: '11 11 * * *'
+  schedule:
+    - cron: '11 11 * * *'
 
 jobs:
   test_schedule:
