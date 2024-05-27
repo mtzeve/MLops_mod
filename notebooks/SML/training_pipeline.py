@@ -120,13 +120,13 @@ X_test.drop('ticker', axis=1, inplace=True)
 scaler = MinMaxScaler()
 
 # Fitting and transforming the 'open' column
-y_train['open_scaled'] = scaler.fit_transform(y_train[['open']])
-y_train.drop('open', axis=1, inplace=True)
+#y_train['open_scaled'] = scaler.fit_transform(y_train[['open']])
+#y_train.drop('open', axis=1, inplace=True)
 
 # %%
 #Doing the same to y_test as done to y_train 
-y_test['open_scaled'] = scaler.fit_transform(y_test[['open']])
-y_test.drop('open', axis=1, inplace=True)
+#y_test['open_scaled'] = scaler.fit_transform(y_test[['open']])
+#y_test.drop('open', axis=1, inplace=True)
 
 # %%
 #Defining the function for the LSTM model
