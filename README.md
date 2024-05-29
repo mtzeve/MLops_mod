@@ -4,5 +4,3 @@ We decided that what we wanted was to predict the 'open' price for TSLA stocks. 
 
 Feature group pipeline creates feature groups for the stocks and for the news sentiment. These feature groups were 'merged' when creating the freature view. After the feature view was created the train, test split by using set dates. We decided on a 2 year span because there was a 2 year historical limit with Polygon's news API.
 
-Unfortunately when creating the inference pipeline we ran into issues when using hopsworks get.batch function, which set us back alot, therefore we couldnt finish exactly how we wanted.
-
