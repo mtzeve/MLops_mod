@@ -82,7 +82,7 @@ tesla_df_b_array = np.expand_dims(tesla_df_b_array, axis=1)
 # %%
 import joblib
 
-the_model = mr.get_model("stock_pred_model", version=10)
+the_model = mr.get_model("stock_pred_model", version=29)
 model_dir = the_model.download()
 
 model = joblib.load(model_dir + "/stock_prediction_model.pkl")
