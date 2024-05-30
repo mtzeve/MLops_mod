@@ -1,94 +1,112 @@
-from datetime import datetime, timedelta
-import joblib
-import pandas as pd
-import numpy as np
-import plotly.express as px
-from matplotlib import pyplot
-import warnings
+import streamlit as st
 import os
 import hopsworks
-from dotenv import load_dotenv
-load_dotenv()
+from datetime import datetime, timedelta
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+import joblib
 
-import streamlit as st
+def login_hopsworks(api_key):
+    project = hopsworks.login(api_key_value=api_key)
+    return project
 
-import folium
-from streamlit_folium import st_folium
-import json
+def get_feature_data(fs, start_date, end_date):
+    feature_view = fs.get_feature_view('tesla_stocks_fv', 3)
+    feature_view.init_batch_scoring(training_dataset_version=1)
+    
+    try:
+        tesla_df_b = feature_view.get_batch_data(start_time=start_date, end_time=end_date)
+        return tesla_df_b
+    except Exception as e:
+        st.error(f"Error fetching batch data: {e}")
+        st.stop()
 
-import asyncio
-import nest_asyncio
+def preprocess_data(df):
+    tickers = df[['ticker']]
+    encoder = OneHotEncoder()
+    ticker_encoded_test = encoder.fit_transform(tickers)
+    ticker_encoded_df_test = pd.DataFrame(ticker_encoded_test.toarray(), columns=encoder.get_feature_names_out(['ticker']))
+    df = pd.concat([df, ticker_encoded_df_test], axis=1)
+    df.drop('ticker', axis=1, inplace=True)
+    
+    df['year'] = df['date'].dt.year
+    df['month'] = df['date'].dt.month
+    df['day'] = df['date'].dt.day
+    df.drop(columns=['date'], inplace=True)
+    
+    return df, encoder
 
-# Apply nest_asyncio to the current event loop
-nest_asyncio.apply(asyncio.get_event_loop())
+def load_model(mr):
+    the_model = mr.get_model("stock_pred_model", version=3)
+    model_dir = the_model.download()
+    model = joblib.load(model_dir + "/stock_prediction_model.pkl")
+    return model
 
-start_date = datetime.now() - timedelta(hours=48)
-end_date = datetime.now() - timedelta(hours=24)
+def make_predictions(model, df):
+    df_array = df.to_numpy()
+    df_array = np.expand_dims(df_array, axis=1)
+    predictions = model.predict(df_array)
+    predictions = np.array(predictions, dtype=np.float32)
+    predictions = predictions[0][0] * 100
+    df['predictions'] = predictions.tolist()
+    return df
 
+def reconstruct_date_column(df):
+    df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
+    df.drop(columns=['year', 'month', 'day'], inplace=True)
+    return df
 
-warnings.filterwarnings("ignore")
+def inverse_transform_tickers(df, encoder):
+    ticker_encoded_df_test = df.filter(like='ticker_')
+    ticker_encoded_array = ticker_encoded_df_test.to_numpy()
+    original_tickers = encoder.inverse_transform(ticker_encoded_array)
+    original_tickers_df = pd.DataFrame(original_tickers, columns=['ticker'])
+    df = pd.concat([df.drop(columns=ticker_encoded_df_test.columns), original_tickers_df], axis=1)
+    return df
 
-api_key = os.getenv('HOPSWORKS_API_KEY')
-project = hopsworks.login(api_key_value=api_key)
-fs = project.get_feature_store()
-
-@st.cache_data()
-def retrieve_dataset(_fv, start_date, end_date):
-    st.write(36 * "-")
-    print_fancy_header('\n💾 Dataset Retrieving...')
-    batch_data = fv.get_batch_data(start_time = start_date, end_time = end_date)
-    return batch_data
-
-
-@st.cache_data()
-def get_feature_view():
-    fv = fs.get_feature_view("tesla_stocks_fv", 5)
-    return fv
-
-
-@st.cache_data()
-def get_model(_project = project):
-    mr = project.get_model_registry()
-    model = mr.get_model("stock_pred_model", version = 10)
-    model_dir = model.download()
-    return joblib.load(model_dir + "/stock_prediction_model.pkl")
-#
-#
 def print_fancy_header(text, font_size=24):
     res = f'<span style="color:#ff5f27; font-size: {font_size}px;">{text}</span>'
-    st.markdown(res, unsafe_allow_html=True)
-#
-#def transform_preds(predictions):
-#    return ['Fraud' if pred == 1 else 'Not Fraud' for pred in predictions]    
+    
+def main():
+    st.title("Stock Predictions")
+    st.write("Predictions for stocks:")
 
-progress_bar = st.sidebar.header('⚙️ Working Progress')
-progress_bar = st.sidebar.progress(0)
-#st.title('🆘 Fraud transactions detection 🆘')
+    # Initialize Hopsworks
+    api_key = os.environ.get('hopsworks_api')
+    project = login_hopsworks(api_key)
+    fs = project.get_feature_store()
+    mr = project.get_model_registry()
 
-#st.write(36 * "-")
-#print_fancy_header('\n📡 Connecting to Hopsworks Feature Store...')
+    # Define date range
+    start_date = datetime.now() - timedelta(hours=48)
+    end_date = datetime.now() - timedelta(hours=24)
 
-#st.write(36 * "-")
-#print_fancy_header('\n🤖 Connecting to Model Registry on Hopsworks...')
-model = get_model(project)
-st.write(model)
-st.write("✅ Connected!")
+    # Fetch and preprocess feature data
+    tesla_df_b = get_feature_data(fs, start_date, end_date)
+    tesla_df_b, encoder = preprocess_data(tesla_df_b)
 
-progress_bar.progress(40)
+    # Load the model and make predictions
+    model = load_model(mr)
+    tesla_df_b = make_predictions(model, tesla_df_b)
 
-st.write(36 * "-")
-print_fancy_header('\n✨ Fetch batch data and predict')
-fv = get_feature_view()
+    # Reconstruct the date column and inverse transform tickers
+    tesla_df_b = reconstruct_date_column(tesla_df_b)
+    tesla_df_b = inverse_transform_tickers(tesla_df_b, encoder)
 
+    # Display the dataframe and plot the predictions
+    selected_ticker = st.selectbox('Select Ticker', tesla_df_b['ticker'])
 
-if st.button('📊 Make a prediction'):
-    batch_data = retrieve_dataset(_fv, start_date, end_date)
-    st.write("✅ Retrieved!")
-    #progress_bar.progress(55)
-    #predictions = model.predict(batch_data)
-    #predictions = transform_preds(predictions)
-    #batch_data_to_explore = batch_data.copy()
-    #batch_data_to_explore['fraud'] = predictions
-    #explore_data(batch_data_to_explore)
+# Filter the DataFrame based on the selected ticker
+    filtered_df = tesla_df_b[tesla_df_b['ticker'] == selected_ticker]
 
-st.button("Re-run")
+# Display the filtered DataFrame
+    st.dataframe(filtered_df)
+    #st.dataframe(tesla_df_b)
+    #st.line_chart(tesla_df_b.set_index('date')['predictions'])
+
+    # Additional information
+    st.write("Model used: stock_pred_model version 29")
+
+if __name__ == "__main__":
+    main()
