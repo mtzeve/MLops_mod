@@ -24,3 +24,6 @@ streamlit
 streamlit_folium
 asyncio
 nest_asyncio
+opencv-python-headless
+easyocr
+Pillow
